@@ -8,6 +8,7 @@ This repository is fork of original [docker repository](https://github.com/docke
 
 Binary
 ======
+* docker binary for Linux-amd64 is available [here](https://github.com/mangalaman93/docker/raw/merge_add_set/bundles/1.9.0/binary/docker-1.9.0)
 * To compile from source, make sure to keep the project in the folder `$GOPATH/github.com/docker/docker` instead of `$GOPATH/github.com/mangalaman93/docker`
 
 Docker Golang Client
