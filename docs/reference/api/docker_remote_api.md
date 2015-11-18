@@ -94,6 +94,13 @@ This section lists each version from latest to oldest.  Each listing includes a 
 
 [Docker Remote API v1.21](docker_remote_api_v1.21.md) documentation
 
+### What's new
+
+`POST /containers/(id)/set`
+
+**New!**
+Container properties can be updated after containers are created.
+
 * `GET /volumes` lists volumes from all volume drivers.
 * `POST /volumes/create` to create a volume.
 * `GET /volumes/(name)` get low-level information about a volume.

@@ -7,6 +7,7 @@ import (
 
 	"github.com/docker/docker/daemon/execdriver"
 	derr "github.com/docker/docker/errors"
+	"github.com/docker/docker/runconfig"
 	"github.com/docker/libnetwork"
 )
 
@@ -197,4 +198,9 @@ func (container *Container) ipcMounts() []execdriver.Mount {
 
 func getDefaultRouteMtu() (int, error) {
 	return -1, errSystemNotSupported
+}
+
+func (container *Container) Set(hostConfig *runconfig.HostConfig) error {
+	// TODO Windows.
+	return nil
 }

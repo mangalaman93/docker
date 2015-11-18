@@ -319,3 +319,9 @@ func (d *Driver) Run(c *execdriver.Command, pipes *execdriver.Pipes, hooks execd
 func (d *Driver) SupportsHooks() bool {
 	return false
 }
+
+// Set implements the execdriver Driver interface.
+// The windows execdriver does not support the set command yet
+func (d *Driver) Set(c *execdriver.Command) error {
+	return fmt.Errorf("Container set is not supported by windows")
+}

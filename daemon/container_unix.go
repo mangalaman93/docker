@@ -1525,3 +1525,75 @@ func (container *Container) ipcMounts() []execdriver.Mount {
 func detachMounted(path string) error {
 	return syscall.Unmount(path, syscall.MNT_DETACH)
 }
+
+func (container *Container) updateContainer(hostConfig *runconfig.HostConfig) {
+	container.Lock()
+	defer container.Unlock()
+
+	if hostConfig.BlkioWeight != 0 {
+		container.hostConfig.BlkioWeight = hostConfig.BlkioWeight
+	}
+	if hostConfig.CPUShares != 0 {
+		container.hostConfig.CPUShares = hostConfig.CPUShares
+	}
+	if hostConfig.CpusetCpus != "" {
+		container.hostConfig.CpusetCpus = hostConfig.CpusetCpus
+	}
+	if hostConfig.CpusetMems != "" {
+		container.hostConfig.CpusetMems = hostConfig.CpusetMems
+	}
+	if hostConfig.Memory != 0 {
+		container.hostConfig.Memory = hostConfig.Memory
+	}
+	if hostConfig.MemorySwap != 0 {
+		container.hostConfig.MemorySwap = hostConfig.MemorySwap
+	}
+	if hostConfig.CPUQuota != 0 {
+		container.hostConfig.CPUQuota = hostConfig.CPUQuota
+	}
+	if hostConfig.CPUPeriod != 0 {
+		container.hostConfig.CPUPeriod = hostConfig.CPUPeriod
+	}
+}
+
+func (container *Container) updateResources() {
+	container.Lock()
+	defer container.Unlock()
+
+	container.command.Resources.BlkioWeight = container.hostConfig.BlkioWeight
+	container.command.Resources.CPUShares = container.hostConfig.CPUShares
+	container.command.Resources.CpusetCpus = container.hostConfig.CpusetCpus
+	container.command.Resources.CpusetMems = container.hostConfig.CpusetMems
+	container.command.Resources.Memory = container.hostConfig.Memory
+	container.command.Resources.MemorySwap = container.hostConfig.MemorySwap
+	container.command.Resources.CPUQuota = container.hostConfig.CPUQuota
+	container.command.Resources.CPUPeriod = container.hostConfig.CPUPeriod
+}
+
+func (container *Container) Set(hostConfig *runconfig.HostConfig) error {
+	if hostConfig == nil {
+		return nil
+	}
+	if container.removalInProgress || container.Dead {
+		return fmt.Errorf("Container is marked for removal and cannot be set.")
+	}
+
+	container.updateContainer(hostConfig)
+
+	// If container is not running, update container struct is enough,
+	// properties will be updated when we start the container.
+	// If container is running (including paused), we need to update
+	// the real world properties.
+	if container.IsRunning() {
+		container.updateResources()
+
+		if err := container.daemon.Set(container.command); err != nil {
+			return err
+		}
+	}
+	if err := container.toDisk(); err != nil {
+		logrus.Errorf("Error saving updated container: %v", err)
+	}
+
+	return nil
+}

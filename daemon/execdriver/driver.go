@@ -106,6 +106,9 @@ type Driver interface {
 
 	// SupportsHooks refers to the driver capability to exploit pre/post hook functionality
 	SupportsHooks() bool
+
+	// Set resource configs for a container
+	Set(c *Command) error
 }
 
 // Ipc settings of the container

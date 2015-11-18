@@ -913,6 +913,10 @@ func (daemon *Daemon) Shutdown() error {
 	return nil
 }
 
+func (daemon *Daemon) Set(c *execdriver.Command) error {
+	return daemon.execDriver.Set(c)
+}
+
 // Mount sets container.basefs
 // (is it not set coming in? why is it unset?)
 func (daemon *Daemon) Mount(container *Container) error {

@@ -1104,6 +1104,46 @@ Status Codes:
 -   **404** – no such container
 -   **500** – server error
 
+### Set a container
+
+`POST /containers/(id)/set`
+
+Set properties of one or more containers.
+
+**Example request**:
+
+       POST /containers/(id)/set HTTP/1.1
+       Content-Type: application/json
+
+       {
+               "HostConfig": {
+                       "BlkioWeight": 300,
+                       "CpuShares": 512,
+                       "CpusetCpus": "0,1",
+                       "CpusetMems": "0",
+                       "Memory": 314572800,
+                       "MemorySwap": 514288000,
+                       "CpuQuota": 50000,
+                       "CpuPeriod": 100000,
+               }
+       }
+
+**Example response**:
+
+       HTTP/1.1 200 OK
+       Content-Type: application/json
+
+       {
+           "Warnings": []
+       }
+
+Status Codes:
+
+-   **200** – no error
+-   **400** – bad parameter
+-   **404** – no such container
+-   **500** – server error
+
 ### Remove a container
 
 `DELETE /containers/(id)`

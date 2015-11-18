@@ -541,3 +541,24 @@ func setupPipes(container *configs.Config, processConfig *execdriver.ProcessConf
 func (d *Driver) SupportsHooks() bool {
 	return true
 }
+
+// Set implements the execdriver Driver interface.
+// Set modifies the hostConfig parameters
+func (d *Driver) Set(c *execdriver.Command) error {
+	d.Lock()
+	cont := d.activeContainers[c.ID]
+	d.Unlock()
+	if cont == nil {
+		return fmt.Errorf("active container for %s does not exist", c.ID)
+	}
+	config := cont.Config()
+	if err := execdriver.SetupCgroups(&config, c); err != nil {
+		return err
+	}
+
+	if err := cont.Set(config); err != nil {
+		return err
+	}
+
+	return nil
+}

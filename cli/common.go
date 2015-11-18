@@ -58,6 +58,7 @@ var dockerCommands = []Command{
 	{"run", "Run a command in a new container"},
 	{"save", "Save an image(s) to a tar archive"},
 	{"search", "Search the Docker Hub for images"},
+	{"set", "Update properties of one or more containers"},
 	{"start", "Start one or more stopped containers"},
 	{"stats", "Display a live stream of container(s) resource usage statistics"},
 	{"stop", "Stop a running container"},
